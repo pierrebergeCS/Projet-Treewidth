@@ -34,6 +34,7 @@ class Tree:
         self.root=root
         self.index_list=[node.index for node in self.list] 
         self.slot=max(self.index_list)+1
+        self.width=max([len(node.value) for node in self.list])
 
     def add_edge(self,parent,child):
         parent.add_children([child])
@@ -69,7 +70,7 @@ class Tree:
                         for node in group:
                             node.index=number
                             number+=1
-                            level.append(str(node.index))
+                            level.append(str(node.value))
                             next+=[node.children]
                         result+="-".join(level)
                     result+="|"
