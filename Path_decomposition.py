@@ -29,8 +29,9 @@ def canonical_path(parent,child,tree):
         actual_node.add_parent(former_node)
         tree.add_node(actual_node)
         former_node=actual_node
-    child.add_parent(former_node)
-    former_node.add_children([child])
+    if child.value!="":
+        child.add_parent(former_node)
+        former_node.add_children([child])
 
 def nice_path(path):#type(path)==tree
     if path.root.value!="":
@@ -53,8 +54,8 @@ def nice_path(path):#type(path)==tree
         path.add_node(empty_node)
         canonical_path(former_node,empty_node,path)
 
-a=Node(0,"")
-b=Node(0,"abcdefgh")
+a=Node(0,"a")
+b=Node(0,"ab")
 a.add_children([b])
 b.add_parent(a)
 t=Tree(a,[a,b])
