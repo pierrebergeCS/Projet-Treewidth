@@ -35,6 +35,53 @@ def join_subtree(parent, children,tree,flag):#flag is here just for us to know i
         
         join_subtree(parent_right,children[1:],tree,flag)
 
+
+
+def adding_join_subtree(tree, parent, children):
+    if any(children):
+        next=[]
+        for child in children:
+            next.append((child,child.children))
+        join_subtree(parent,children,tree,False)
+        for (a,b) in next:
+            adding_join_subtree(tree,a,b)
+
+def add_leaves(tree,node):
+    if node.children!=[]:
+        for child in node.children:
+            add_leaves(tree,child)
+    else:
+        if node.value!='':
+            empty_node=Node(0,'')
+            tree.add_node(empty_node)
+            tree.add_edge(node,empty_node)
+        
+def adding_empty_nodes(tree):
+    if tree.root.value!='':
+        empty_node=Node(0,"")
+        tree.add_node(empty_node)
+        tree.add_edge(empty_node,tree.root)
+        tree.root=empty_node
+    add_leaves(tree, tree.root)
+
+
+def adding_canonical_paths(tree,parent,children):
+    if len(children)>1:
+        for child in children:
+            adding_canonical_paths(tree,child,child.children)
+    elif len(children)==1:
+        child=children[0]
+        canonical_path(parent,child,tree)
+        adding_canonical_paths(tree,child,child.children)
+
+def canonical_tree(tree):
+    adding_join_subtree(tree,tree.root,tree.root.children)
+    #print(tree)
+    adding_canonical_paths(tree,tree.root,tree.root.children)
+    #print(tree)
+    adding_empty_nodes(tree)
+    print(tree)
+
 a=Node(0,"")
 b=Node(0,"b")
 c=Node(0,"c")
@@ -49,30 +96,4 @@ e.add_parent(a)
 t=Tree(a,[a,b,c,d,e])
 print(t)
 print()
-
-def adding_join_subtree(tree, parent, children):
-    if any(children):
-        next=[]
-        for child in children:
-            next.append((child,child.children))
-        join_subtree(parent,children,tree,False)
-        for (a,b) in next:
-            adding_join_subtree(tree,a,b)
-
-def adding_canonical_paths(tree,parent,children):
-    if len(children)>1:
-        for child in children:
-            adding_canonical_paths(tree,child,child.children)
-    elif len(children)==1:
-        child=children[0]
-        canonical_path(parent,child,tree)
-        adding_canonical_paths(tree,child,child.children)
-
-def canonical_tree(tree):
-    adding_join_subtree(tree,tree.root,tree.root.children)
-    print(tree)
-    adding_canonical_paths(tree,tree.root,tree.root.children)
-    print(tree)
-
-
 canonical_tree(t)
