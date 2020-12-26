@@ -78,14 +78,3 @@ def nice_path(path):#type(path)==tree
         empty_node.add_parent(former_node)
         path.add_node(empty_node)
         canonical_path(former_node,empty_node,path)
-
-a=Node(0,"abcdef")
-b=Node(0,"abcxyz")
-a.add_children([b])
-b.add_parent(a)
-t=Tree(a,[a,b])
-print(t)
-
-print("\n next\n")
-nice_path(t)
-print(t)
