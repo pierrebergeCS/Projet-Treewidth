@@ -1,7 +1,9 @@
 from Classes import Node, Tree
 
 def sym_difference(node1,node2):
-    '''returns the symmetric difference between the values
+    '''inputs: two Node objects
+    output: a list of strings
+    returns the symmetric difference between the values
     of two nodes in the form of a list of strings'''
     sym_diff=[]
     for char in node1.value:
@@ -11,6 +13,7 @@ def sym_difference(node1,node2):
 
 def canonical_path(path,parent,child): 
     ''' inputs: path (Tree object) - parent (Node object) - child (Node object)
+    output: nothing 
     adds forget nodes and add nodes to the path between parent and its child '''
     starting_sym_diff=sym_difference(parent,child) 
     #list of char that we should get rid of as they don't appear in child.value
@@ -53,7 +56,7 @@ def canonical_path(path,parent,child):
     
 
 def nice_path(path):
-    '''takes a path (of type Tree) as input, and returns a nice path'''
+    '''takes a path (Tree object) as input, and returns a nice path (Tree object)'''
     if path.root.value!="": 
         #in case the root is non empty, we add an empty node as a root
         empty_node=Node()
