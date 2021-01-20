@@ -82,18 +82,39 @@ t=Tree(a)
 tree.append(t)
 
 #case2
-a=Node('*')
-b=Node('-')
-c=Node('+')
+a=Node('a')
+b=Node('b')
+c=Node('c')
 a.add_children([b,c])
 t=Tree(a)
 tree.append(t)
 
-if not True:
-    t=tree[0]
+#case3 redundant empty node but still a nice tree
+a=Node('a')
+b=Node('b')
+c=Node('c')
+d=Node('d')
+e=Node('e')
+a.add_children([b,c,d,e])
+t=Tree(a)
+tree.append(t)
+
+if True:
+    t=tree[3]
     print('printing the initial tree:')
     print(t)
+
+    print('the size of the tree is:')
+    print(t.size())
+    print()
 
     print('printing the canonical tree:')
     canonical_tree(t)
     print(t)
+
+    print('the width of the tree is:')
+    print(t.width())
+    print()
+
+    print('the size of the tree is:')
+    print(t.size())
