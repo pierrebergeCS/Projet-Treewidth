@@ -56,7 +56,7 @@ def canonical_path(path,parent,child):
     
 
 def nice_path(path):
-    '''takes a path (Tree object) as input, and returns a nice path (Tree object)'''
+    '''takes a path (Tree object) as input, and makes it a nice path (Tree object)'''
     if path.root.value!="": 
         #in case the root is non empty, we add an empty node as a root
         empty_node=Node()
