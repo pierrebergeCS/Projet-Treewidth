@@ -27,7 +27,7 @@ def canonical_path(path,parent,child):
 
     #first step: adding forget nodes until reaching the node with value (node1.value intersect node2.value)
     for char in starting_sym_diff:
-        string=string.replace(char,"")
+        string=string.replace(char,"",1)
         actual_node=Node(string)
         actual_node.add_parent(former_node)
         former_node=actual_node

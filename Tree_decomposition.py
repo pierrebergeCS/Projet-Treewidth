@@ -55,7 +55,7 @@ def adding_empty_leaves(tree):
     def aux(node):
         if node.children!=[]:
             for child in node.children:
-                adding_empty_leaves(child)
+                aux(child)
         else:
             if node.value!='':
                 empty_node=Node('')
@@ -65,7 +65,7 @@ def adding_empty_leaves(tree):
         empty_node=Node("")
         tree.root.add_parent(empty_node)
         tree.root=empty_node
-    aux(tree)
+    aux(tree.root)
     
 
 
