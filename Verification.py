@@ -1,4 +1,5 @@
 from Classes import Tree, Node
+from Path_decomposition import set_substraction
 from Tree_decomposition import canonical_tree
 from collections import defaultdict
 
@@ -142,3 +143,67 @@ def is_tree_decomposition(tree,graph):
     if not is_connex(tree,graph) or not check_vertices_edges(tree,graph):
         return False
     return True
+
+def is_nice_tree(tree):
+    ''' Using DFS, checks if tree (supposedly a tree decomposition)
+        satisfies the conditions of nice tree decomposition.
+    Parameters:
+        tree (Tree object)
+    Returns:
+        boolean'''
+
+    def aux(node):
+        if len(node.children)>2:
+            return False
+        elif len(node.children)==2 and not (node.value==node.children[0]==node.children[1]):
+            return False
+        elif len(node.children)==1:
+            child=node.children[0]
+            # the condition belows is to test 
+            # if node included in child or the inverse, 
+            # which should be the case in nice tree decomp
+            if len(set_substraction(node,child))+len(set_substraction(child,node))>1:
+                return False
+        for child in node.children:
+            if not aux(child):
+                return False
+        return True
+    
+    return is_nice_tree(tree.root)
+
+#à enlever
+def is_connex2(tree,graph):
+    def is_in(index,node):
+        '''input: index: str - node: Node object
+        returns True if index is in the nodes of the subtree rooted at node'''
+        if index in node.value:
+            return True
+        else:
+            for child in node.children:
+                if is_in(index,child):
+                    return True
+            return False
+    
+    def aux(index):
+        def bfs(node,boolean_parent):
+            if node.children==[]:
+                return True
+            else:
+                occurence=boolean_parent
+                for child in node.children:
+                    if is_in(index,child):
+                        occurence+=1
+                        break
+                if occurence>=2 and index not in node.value:
+                    return False
+                else:
+                    for child in node.children:
+                        if not bfs(child,boolean_parent or (index in node.value)):
+                            return False
+                    return True
+        return bfs(tree.root,False)
+
+    for vertice in graph.keys():
+        if not aux(vertice):
+            return False
+        return True
