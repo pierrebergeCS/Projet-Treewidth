@@ -1,8 +1,11 @@
 from Classes import Node, Tree
 from Path_decomposition import nice_path
 from Tree_decomposition import adding_join_subtree, adding_empty_leaves, adding_join_subtree, canonical_tree
+from Verification import is_connex,is_connex2, check_vertices_edges, fill_dict
 
+####### examples on path
 path=[]
+
 #case0
 a=Node('abcdefg')
 t=Tree(a)
@@ -36,7 +39,7 @@ path.append(t)
 a=Node('')
 b=Node('*')
 b.add_parent(a)
-c=Node('**')
+c=Node('**')    
 c.add_parent(b)
 d=Node('***')
 d.add_parent(c)
@@ -57,6 +60,8 @@ if not True:
     print('printing the canonical path:')
     nice_path(t)
     print(t)
+
+####### examples on tree
 
 tree=[]
 
@@ -90,8 +95,8 @@ t=Tree(a)
 tree.append(t)
 
 #case3 redundant empty node but still a nice tree
-a=Node('a')
-b=Node('b')
+a=Node('afg')
+b=Node('bgh')
 c=Node('c')
 d=Node('d')
 e=Node('e')
@@ -99,8 +104,8 @@ a.add_children([b,c,d,e])
 t=Tree(a)
 tree.append(t)
 
-if True:
-    t=tree[3]
+if not True:
+    t=tree[0]
     print('printing the initial tree:')
     print(t)
 
@@ -118,3 +123,44 @@ if True:
 
     print('the size of the tree is:')
     print(t.size())
+
+####### example on verification
+
+verification=[]
+graphs=[]
+
+#case0
+a=Node('a')
+b=Node('b')
+c=Node('c')
+d=Node('d')
+aa=Node('f')
+a.add_children([b,c,d])
+aa.add_parent(b)
+t=Tree(a)
+verification.append(t)
+graphs.append({'a': [], 'b':[], 'c':[], 'd':[], 'f':[]})
+
+#case1
+a=Node('abf')
+b=Node('bcf')
+b.add_parent(a)
+c=Node('cdf')
+c.add_parent(b)
+d=Node('edf')
+d.add_parent(c)
+t=Tree(a)
+verification.append(t)
+graphs.append({'a':['b','f'] , 'b': ['c','a'] , 'c':['b','d'] , 'd':['e','c'] , 'e':['d','f'] , 'f':['a','e']} )
+
+if True:
+    t=verification[1]
+    graph=graphs[1]
+    print('repr tree')
+    print(t)
+    print('\ndict of edges according to the tree')
+    print( fill_dict(t) )
+    print('\ndoes the tree cover all edges of the initial graph and all its vertices ?')
+    print(check_vertices_edges(t,graph))
+    print('\nare the different subgraphs of the tree containing each vertex connex ?')
+    print(is_connex2(t,graph))
