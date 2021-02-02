@@ -14,10 +14,10 @@ class Node:
     delete_edge : deletes the edge between the node and another
     ___str___: gives a basic visual representation of the node, together with its parent and children'''
 
-    def __init__(self, value=''):
+    def __init__(self, value=[]):
         ''' Initializes the Node object with the value given in parameters, otherwise it's just an empty Node.
         Parameters:
-            value (str)'''
+            value (str list)'''
 
         self.value = value
         self.parent = None
@@ -56,10 +56,10 @@ class Node:
 
         string = ''
         if self.parent is not None:
-            string += self.parent.value+'\n|\n'
-        string += self.value+'\n|\n'
+            string += "("+",".join(self.parent.value)+")"+'\n|\n'
+        string += "("+",".join(self.value)+")"+'\n|\n'
         for child in self.children:
-            string += child.value+' '
+            string += "("+",".join(child.value)+")"+' '
         return string
 
 
@@ -157,10 +157,10 @@ class Tree:
                     if any(group):  # to check if there is any children left
                         level = []
                         for node in group:
-                            if node.value != '':
-                                level.append(str(node.value))
+                            if len(node.value) != 0:
+                                level.append( "("+",".join(node.value)+")" )
                             else:
-                                level.append(str("Ø"))
+                                level.append("Ø")
                             next += [node.children]
                         # children of the same node are separated by '-'
                         result += "-".join(level)

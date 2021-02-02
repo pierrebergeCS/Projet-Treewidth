@@ -24,7 +24,7 @@ def join_subtree(parent, children,flag):
         # if the child is different from the parent,
         # we add a node of value parent.value between parent and child
         # else, we just (re)connect the child and the parent
-        if children[0].value!=parent.value:
+        if set(children[0].value)!=set(parent.value):
             parent_left=Node(parent.value)
             parent_left.add_parent(parent)
             children[0].add_parent(parent_left)
@@ -39,7 +39,7 @@ def join_subtree(parent, children,flag):
         join_subtree(parent_right,children[1:],flag)
 
 def adding_join_subtree(parent, children):
-    ''' Applien join_subtree between every non-leaf node and its children.
+    ''' Applies join_subtree between every non-leaf node and its children.
         (when a node has only a child, join_subtree don't change anything) 
     Parameters: 
         parent (Node object)
@@ -68,12 +68,12 @@ def adding_empty_leaves(tree):
             for child in node.children:
                 aux(child)
         else:
-            if node.value!='':
-                empty_node=Node('')
+            if node.value!=[]:
+                empty_node=Node()
                 empty_node.add_parent(node)
 
-    if tree.root.value!='':
-        empty_node=Node("")
+    if tree.root.value!=[]:
+        empty_node=Node()
         tree.root.add_parent(empty_node)
         tree.root=empty_node
     aux(tree.root)

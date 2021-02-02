@@ -6,7 +6,8 @@ from collections import defaultdict
 # hash pour être rigoureux
 
 def fill_dict(tree):
-    ''' Gives the adjcency list of the tree.
+    ''' Gives all the (possible) edges and vertices 
+    that the original graph can have, given that (tree) is its tree decomposition.
     Parameters:
         tree (Tree object)
     Returns:
@@ -15,7 +16,7 @@ def fill_dict(tree):
     adj_list=defaultdict(lambda: [])
     def bfs(node):
         ''' Using BFS to fills the dict adj_list with 
-            the vertices and edges encountered starting
+            the vertices and edges encountered starting from node.
         Parameters:
             node (Node object)'''
 
@@ -52,8 +53,8 @@ def check_vertices_edges(tree,graph):
     return True
 
 
-def is_connex(tree, graph):
-    ''' Checks if, for every vertex (v) of the graph, the subgraph containing (v) is connex,
+def is_connected(tree, graph):
+    ''' Checks if, for every vertex (v) of the graph, the subgraph induced by the nodes containing (v) is connected,
         by comparing the size of some subtree where all nodes contain (v) 
         and the number of occurences of (v) in the whole tree.
     Parameters:
@@ -78,7 +79,7 @@ def is_connex(tree, graph):
         return None
 
     def size_connected_subtree(node,index):
-        ''' Using DFS and starting from (node), 
+        ''' Using DFS and starting from (node) given by find_first, 
             computes the size of the subtree where each node contains (index).
         Parameters:
             node (Node object)
@@ -95,38 +96,38 @@ def is_connex(tree, graph):
         else:
             return 0
 
-    def count_occurences(node,index):
-        ''' Using DFS, counts the number of occurences of index starting from node.
+    def count_occurences(node,vertex):
+        ''' Using DFS, counts the number of occurences of vertex starting from node.
         Parameters:
             node (Node object)
-            index (str)
+            vertex (str)
         Returns:
             occurences (int)'''
 
         occurence=0
-        if index in node.value:
+        if vertex in node.value:
             occurence+=1
         for child in node.children:
-            occurence+=count_occurences(child,index)
+            occurence+=count_occurences(child,vertex)
         return occurence
 
-    def aux(tree,index):
-        ''' For a given vertex (represented by index), 
-            checks if the subgraph of the tree where all node contain index is connex.
+    def aux(tree,vertex):
+        ''' For a given vertex, 
+            checks if the subgraph induced by the nodes containing index is connected.
         Parameters:
             tree (Tree object)
-            index (int)
+            vertex (int)
         Returns:
             boolean'''
         
-        count_total=count_occurences(tree.root,index)
+        count_total=count_occurences(tree.root,vertex)
 
-        count_subtree=size_connected_subtree( find_first(tree.root,index) ,index)
+        count_subtree=size_connected_subtree( find_first(tree.root,vertex), vertex)
 
         return count_total==count_subtree
     
-    for index in graph.keys():
-        if not aux(tree,index):
+    for vertex in graph.keys():
+        if not aux(tree,vertex):
             return False
 
     return True
@@ -140,7 +141,7 @@ def is_tree_decomposition(tree,graph):
     Returns:
         boolean'''
 
-    if not is_connex(tree,graph) or not check_vertices_edges(tree,graph):
+    if not is_connected(tree,graph) or not check_vertices_edges(tree,graph):
         return False
     return True
 
@@ -152,10 +153,13 @@ def is_nice_tree(tree):
     Returns:
         boolean'''
 
+    # à changer: la racine est vide ? si les feuilles sont vides ? + fausse
+
     def aux(node):
         if len(node.children)>2:
             return False
-        elif len(node.children)==2 and not (node.value==node.children[0]==node.children[1]):
+        elif len(node.children)==2 and not (set(node.value)==set(node.children[0].value)==set(node.children[1].value) ):
+            print(node)
             return False
         elif len(node.children)==1:
             child=node.children[0]
@@ -169,41 +173,4 @@ def is_nice_tree(tree):
                 return False
         return True
     
-    return is_nice_tree(tree.root)
-
-#à enlever
-def is_connex2(tree,graph):
-    def is_in(index,node):
-        '''input: index: str - node: Node object
-        returns True if index is in the nodes of the subtree rooted at node'''
-        if index in node.value:
-            return True
-        else:
-            for child in node.children:
-                if is_in(index,child):
-                    return True
-            return False
-    
-    def aux(index):
-        def bfs(node,boolean_parent):
-            if node.children==[]:
-                return True
-            else:
-                occurence=boolean_parent
-                for child in node.children:
-                    if is_in(index,child):
-                        occurence+=1
-                        break
-                if occurence>=2 and index not in node.value:
-                    return False
-                else:
-                    for child in node.children:
-                        if not bfs(child,boolean_parent or (index in node.value)):
-                            return False
-                    return True
-        return bfs(tree.root,False)
-
-    for vertice in graph.keys():
-        if not aux(vertice):
-            return False
-        return True
+    return aux(tree.root)

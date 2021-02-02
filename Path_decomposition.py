@@ -9,9 +9,9 @@ def set_substraction(node1,node2):
         set_minus (str list)'''
 
     set_minus=[]
-    for char in node1.value:
-        if char not in node2.value:
-            set_minus.append(char)
+    for element in node1.value:
+        if element not in node2.value:
+            set_minus.append(element)
     return set_minus
 
 def canonical_path(parent,child): 
@@ -27,14 +27,14 @@ def canonical_path(parent,child):
     #list of char that we should add to reach the child
     parent.delete_edge(child)
     #we substitude this edge by the new nodes
-
-    string=parent.value
+    
+    temp_value=parent.value[:]
     former_node=parent
 
     #first step: adding forget nodes until reaching the node with value (node1.value intersect node2.value)
-    for char in starting_set_minus:
-        string=string.replace(char,"",1)
-        actual_node=Node(string)
+    for element in starting_set_minus:
+        temp_value.remove(element)#waaaaaaaaaaas here
+        actual_node=Node(temp_value[:])
         actual_node.add_parent(former_node)
         former_node=actual_node
     
@@ -51,9 +51,9 @@ def canonical_path(parent,child):
         arrival_set_minus=arrival_set_minus[:-1]
     
         #second step: add nodes until reaching the node2
-        for char in arrival_set_minus:
-            string=string+char
-            actual_node=Node(string)
+        for element in arrival_set_minus:
+            temp_value.append(element)
+            actual_node=Node(temp_value[:])
             actual_node.add_parent(former_node)
             former_node=actual_node
         
