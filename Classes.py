@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import pydot
+from sidefunctions import hierarchy_pos
 
 class Node:
     ''' A class used to represent a node of a tree
@@ -191,7 +191,7 @@ class Tree:
                     d[0]="Ø"
                 else:
                     d[0]=",".join(node.value)
-                d[0]=d[0]+" : root"
+
                 for child in node.children:
                     DFS(child)
             else:
@@ -208,7 +208,7 @@ class Tree:
                     DFS(child)
         
         DFS(self.root)
-        pos=nx.spectral_layout(graph)
-        nx.draw(graph,pos,labels=d,with_labels=True)
+        pos=hierarchy_pos(graph,0)
+        nx.draw(graph,pos,labels=d,with_labels=True,node_size=[150*len(node) for node in d.values()],node_color='red')
         plt.show()
         return ""
