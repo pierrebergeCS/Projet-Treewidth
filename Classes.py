@@ -1,3 +1,7 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+import pydot
+
 class Node:
     ''' A class used to represent a node of a tree
 
@@ -132,7 +136,7 @@ class Tree:
         return bfs([self.root])
 
 
-    def __str__(self):
+    def __str__2(self):
         '''gives an ugly vizualization of the tree, example:
         0|
         1-2|
@@ -173,3 +177,38 @@ class Tree:
                 return ''
 
         return represent([[self.root]])
+    
+    def __str__(self):
+        graph=nx.Graph()
+        correspondance=[]
+        graph.nodes(data=True)
+        d={}
+        def DFS(node):
+            if correspondance==[]:
+                graph.add_node(0)
+                correspondance.append(node)
+                if node.value==[]:
+                    d[0]="Ø"
+                else:
+                    d[0]=",".join(node.value)
+                d[0]=d[0]+" : root"
+                for child in node.children:
+                    DFS(child)
+            else:
+                index_node=len(correspondance)
+                graph.add_node( index_node )
+                if node.value==[]:
+                    d[index_node]="Ø"
+                else:
+                    d[index_node]=",".join(node.value)
+                correspondance.append(node)
+                index_father=correspondance.index(node.parent)
+                graph.add_edge(index_father,index_node)
+                for child in node.children:
+                    DFS(child)
+        
+        DFS(self.root)
+        pos=nx.spectral_layout(graph)
+        nx.draw(graph,pos,labels=d,with_labels=True)
+        plt.show()
+        return ""
