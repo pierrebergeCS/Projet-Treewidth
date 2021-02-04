@@ -38,7 +38,7 @@ def canonical_path(parent,child):
         actual_node.add_parent(former_node)
         former_node=actual_node
     
-    #second step: forget nodes
+    #second step: add nodes
     if len(arrival_set_minus)==0:
         #if node2.value included in node1.value then the former_node.value=node2.value
         #so no need to have the two in the path

@@ -178,7 +178,22 @@ class Tree:
 
         return represent([[self.root]])
     
+    def brute_force(self):
+        ''' Enforces that every child of a node in the tree satisfy node==child.parent.'''
+        def DFS(node):
+            for child in node.children:
+                child.parent=node
+                DFS(child)
+        DFS(self.root)
+    
     def __str__(self):
+        ''' Using matplotlib and networkx, output a vizual representation of the tree, 
+        and prints an empty string in the console.
+        
+        Returns:
+            empty str'''
+
+        self.brute_force()
         graph=nx.Graph()
         correspondance=[]
         graph.nodes(data=True)
@@ -193,6 +208,7 @@ class Tree:
                     d[0]=",".join(node.value)
 
                 for child in node.children:
+                    #the problem starts here, because child.parent =/= node (equality of memory adresses)
                     DFS(child)
             else:
                 index_node=len(correspondance)
@@ -209,6 +225,6 @@ class Tree:
         
         DFS(self.root)
         pos=hierarchy_pos(graph,0)
-        nx.draw(graph,pos,labels=d,with_labels=True,node_size=[150*len(node) for node in d.values()],node_color='red')
+        nx.draw(graph,pos,labels=d,with_labels=True,node_size=[200*len(node) for node in d.values()],node_color='red')
         plt.show()
         return ""
