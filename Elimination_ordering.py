@@ -58,15 +58,7 @@ def tree_decomposition_by_elimination(elim_ordering, graph):
     g = copy.deepcopy(graph)
     return sub_tree(elim_ordering, {}, g)
 
-
-graph = {}
-graph['1'] = {'2'}
-graph['2'] = {'1', '3'}
-graph['3'] = {'2'}
-
-print(tree_decomposition_by_elimination(['1', '2', '3'], graph))
-print(tree_decomposition_by_elimination(['2', '3', '1'], graph))
-
+'''
 graph = {}
 graph['1'] = {'9', '2', '3'}
 graph['9'] = {'1', '6', '7'}
@@ -81,4 +73,33 @@ graph['5'] = {'3', '4'}
 print(tree_decomposition_by_elimination(['1','2','3','4','5','6','7','8','9'], graph))
 print(tree_decomposition_by_elimination(['8','2','7','6','5','4','3','9','1'], graph))
 
+graph = {}
+graph['1'] = {'2', '3'}
+graph['2'] = {'1', '3', '4'}
+graph['3'] = {'1', '2', '5'}
+graph['4'] = {'2', '5'}
+graph['5'] = {'3', '4'}
 
+print(tree_decomposition_by_elimination(['2', '3', '1', '4', '5'], graph))
+print(tree_decomposition_by_elimination(['1', '4', '5', '2', '3'], graph))
+
+graph = {}
+graph['1'] = {'2'}
+graph['2'] = {'1', '3'}
+graph['3'] = {'2'}
+
+print(tree_decomposition_by_elimination(['1', '2', '3'], graph))
+print(tree_decomposition_by_elimination(['2', '3', '1'], graph))
+'''
+graph = {}
+graph['7'] = {'4', '8'}
+graph['8'] = {'7', '4', '6', '9', '2'}
+graph['9'] = {'8', '6'}
+graph['4'] = {'7', '8', '1', '2'}
+graph['6'] = {'8', '9', '2', '3'}
+graph['1'] = {'4', '2'}
+graph['2'] = {'1', '4', '3', '6', '8'}
+graph['3'] = {'2', '6'}
+
+print(tree_decomposition_by_elimination(['1', '3', '7', '9', '4', '6', '2', '8'], graph))
+print(tree_decomposition_by_elimination(['1', '2', '3', '4', '6', '7', '8', '9'], graph))
