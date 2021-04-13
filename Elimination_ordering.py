@@ -1,4 +1,5 @@
 from Verification import *
+from itertools import permutations
 import copy
 
 
@@ -108,7 +109,23 @@ graph['3'] = {'2', '6'}
 print(tree_decomposition_by_elimination(['1', '3', '7', '9', '4', '6', '2', '8'], graph))
 print(tree_decomposition_by_elimination(['1', '2', '3', '4', '6', '7', '8', '9'], graph))
 '''
+def width(tree):
+    w = 1
+    Q = [tree.root]
+    while Q != []:
+        u = Q.pop()
+        w = max(w, len(u.value))
+        for v in u.children:
+            Q.append(v)
+    return w-1
 
+def brute_tree_width(graph):
+    tw = len(graph)
+    for elim in permutations(list(graph.keys())):
+        w = width(tree_decomposition_by_elimination(list(elim), graph))
+        if w < tw:
+            tw = w
+    return tw
 
 def greedy_elim(f, graph):
     '''
