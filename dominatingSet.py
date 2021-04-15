@@ -95,7 +95,7 @@ class subTree(Classes.Tree):
         return ""
 
 def usual_types(root):
-    ''' given a nice one, changes the types of node (we need introduce edges)
+    ''' given a nice tree, changes the types of node (altough we still need introduce edges)
     
     Parameters:
         root: Node Class'''
@@ -149,6 +149,15 @@ def introduce_edge_node(root,graph):
         next=tempo_search[:]
 
 def very_canonical_tree(tree,graph):
+    '''From tree, returns a very canonical one (in particular: all nodes are object of the class subNodes).
+
+    Parameters: 
+        tree: Tree object.
+        graph: dictionnary representing adjacency list.
+        
+    Returns:
+        root: subNode object'''
+
     canonical_tree(tree)
     root=tree.root
     usual_types(root)
@@ -176,6 +185,10 @@ def very_canonical_tree(tree,graph):
     return root
 
 def solver(root):
+    ''' Given a very canonical tree, solves the min-dominating set problem.
+    Parameters:
+        root: subNode object'''
+
     typeof=root.type_of
     if typeof==4:
         root.colors={():0}
@@ -269,6 +282,9 @@ def solver(root):
                         root.colors[new_color]=min( root.colors[new_color], root.children[0].colors[color1]+root.children[1].colors[color2]-number )
                     else:
                         root.colors[new_color]=root.children[0].colors[color1]+root.children[1].colors[color2]-number
+
+
+# Examples of graphs and the cardinal of their min-dominating set
 
 a=subNode(['a','b','c'])
 b=subNode(['c','d','e','f'])

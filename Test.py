@@ -1,7 +1,8 @@
 from Classes import Node, Tree
-from Path_decomposition import nice_path
-from Tree_decomposition import adding_join_subtree, adding_empty_leaves, adding_join_subtree, canonical_tree
+from Path_decomposition import nice_path, set_substraction
+from Tree_decomposition import adding_join_subtree, adding_empty_leaves, adding_join_subtree, clean_tree, canonical_tree
 from Verification import is_connected, check_vertices_edges, fill_dict, is_nice_tree
+
 
 ####### examples on path
 path=[]
@@ -13,15 +14,15 @@ path.append(t)
 
 #case1
 a=Node()
-b=Node(['a'])
+b=Node(['a','b'])
 b.add_parent(a)
-c=Node(['a','b'])
+c=Node(['a'])
 c.add_parent(b)
 d=Node(['a','b','c'])
 d.add_parent(c)
 e=Node(['a','b'])
 e.add_parent(d)
-f=Node(['a','b'])
+f=Node()
 f.add_parent(e)
 g=Node()
 g.add_parent(f)
@@ -35,31 +36,16 @@ b.add_parent(a)
 t=Tree(a)
 path.append(t)
 
-#abnormal case (due to the way symmetric diff is built, but that's not a big problem)
-a=Node('')
-b=Node('*')
-b.add_parent(a)
-c=Node('**')    
-c.add_parent(b)
-d=Node('***')
-d.add_parent(c)
-e=Node('**')
-e.add_parent(d)
-f=Node('*')
-f.add_parent(e)
-g=Node('')
-g.add_parent(f)
-t=Tree(a)
-path.append(t)
-
-if not True:
-    t=path[2]
+if True:
+    t=path[2] 
     print('printing the initial path:')
+    print('printing the canonical path:')   
+
+    #clean_tree(t.root)
     print(t)
-    
-    print('printing the canonical path:')
     nice_path(t)
     print(t)
+    print(t.console())
 
 ####### examples on tree
 
@@ -72,12 +58,14 @@ tree.append(t)
 
 #case1
 a=Node()
+z=Node()
+z.add_parent(a)
 b=Node()
 c=Node()
-a.add_children([b,c])
+z.add_children([b,c])
 d=Node(['a'])
 d.add_parent(b)
-e=Node(['b'])
+e=Node(['a'])
 e.add_parent(c)
 f=Node()
 f.add_parent(d)
@@ -104,8 +92,8 @@ a.add_children([b,c,d,e])
 t=Tree(a)
 tree.append(t)
 
-if not True:
-    t=tree[3]
+if True:
+    t=tree[1]
     print('printing the initial tree:')
     print(t)
 
@@ -153,7 +141,7 @@ t=Tree(a)
 verification.append(t)
 graphs.append({'a':['b','f'] , 'b': ['c','a'] , 'c':['b','d'] , 'd':['e','c'] , 'e':['d','f'] , 'f':['a','e']} )
 
-if True:
+if not True:
     case=0
     t=verification[case]
     graph=graphs[case]
@@ -169,3 +157,19 @@ if True:
     canonical_tree(t)
     print(t)
     print(is_nice_tree(t))
+
+a=Node(['e','f'])
+b=Node(['b','e','d'])
+b.add_parent(a)
+c=Node(['b','c','d'])
+c.add_parent(b)
+d=Node(['d','g'])
+e=Node(['b','c','a'])
+c.add_children([d,e])
+
+if not True:
+    t=Tree(a)
+
+    canonical_tree(t)
+
+    print(t)
