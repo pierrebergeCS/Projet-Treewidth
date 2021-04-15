@@ -7,7 +7,7 @@ class Node:
 
     Attributes
     ----------
-    value : str
+    value : str list
     parent : a Node object
     children : a list of Node objects
 
@@ -32,7 +32,7 @@ class Node:
         Parameters: 
             list_children (Node objects list)'''
 
-        self.children.extend(list_children)
+        self.children.extend(list_children[:])
         for child in list_children:
             child.parent = self
 
@@ -42,7 +42,7 @@ class Node:
             node (Node object)'''
 
         self.parent = node
-        (node.children).append(self)
+        node.children=node.children[:]+[self]
 
     def delete_edge(self, node):
         ''' Deletes the edge between self and node (if it exists). 
@@ -50,13 +50,17 @@ class Node:
             node (Node object)'''
         if node == self.parent:
             self.parent = None
-            node.children.remove(self)
+            aux=node.children[:]
+            aux.remove(self)
+            node.children=aux[:]
         elif node in self.children:
-            self.children.remove(node)
+            aux=self.children[:]
+            aux.remove(node)
+            self.children=aux[:]
             node.parent = None
 
     def __str__(self):
-        ''' gives a visual representation of the node, its parent and its children'''
+        ''' gives a visual representation in the CLI of the node, its parent and its children'''
 
         string = ''
         if self.parent is not None:
@@ -78,7 +82,7 @@ class Tree:
     -------
         width : gives the width of the tree
         size : gives the size of the tree
-        ___str___ : gives a very basic and ugly representation of the tree'''
+        ___str___ : gives a vizualisation representation of the tree'''
 
     def __init__(self, root):
         ''' Initializes the Tree object given its root.
@@ -136,8 +140,8 @@ class Tree:
         return bfs([self.root])
 
 
-    def __str__2(self):
-        '''gives an ugly vizualization of the tree, example:
+    def console(self):
+        '''gives an ugly vizualization of the tree in the CLI, example:
         0|
         1-2|
         3|4-5|
@@ -177,23 +181,21 @@ class Tree:
                 return ''
 
         return represent([[self.root]])
-    
-    def brute_force(self):
-        ''' Enforces that every child of a node in the tree satisfy node==child.parent.'''
-        def DFS(node):
-            for child in node.children:
-                child.parent=node
-                DFS(child)
-        DFS(self.root)
-    
+
     def __str__(self):
-        ''' Using matplotlib and networkx, output a vizual representation of the tree, 
-        and prints an empty string in the console.
+        ''' Using matplotlib and networkx, outputs a vizual representation of the tree, 
+        and prints an empty string in the CLI.
         
         Returns:
             empty str'''
 
-        self.brute_force()
+        def DFS_brute(node):
+            ''' A brute force method to solve a minor problem caused in the vizualisation of the tree '''
+            for child in node.children:
+                child.parent=node
+                DFS_brute(child)
+        DFS_brute(self.root)
+
         graph=nx.Graph()
         correspondance=[]
         graph.nodes(data=True)
