@@ -10,8 +10,9 @@ This is the implementation part of the research project on treewidth and its app
 - Youssef Irhboula
 
 ## Supervisor
-Pierre Bergé
+Pierre Bergé, Arpad Rimmel, Joanna Tomasik
 
+## Content
 As of now, this project implements: 
 - Transformation of Tree Decomposition into nice one.
 - Solving the Min-Dominating Set and Max-Weighted Independant Set using dynamic programming and tree decompositions.
