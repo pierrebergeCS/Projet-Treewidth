@@ -1,6 +1,19 @@
-# Projet Treewidth
-Partie code du projet treewidth. 
+# Treewidth project
 
-Etudiants :  Baptiste, Walid (1A) Ali, Youssef (2A)
+This is the implementation part of the research project on treewidth and its application.
 
-Ce document sert à décrire l'arborescence du repository Github, i.e. ce que contient chaque dossier, sous-dossier, etc.
+## Authors
+
+- Ali Abdelmotalib
+- Walid Astaoui
+- Baptiste Carbillet
+- Youssef Irhboula
+
+## Supervisor
+Pierre Bergé
+
+As of now, this project implements: 
+- Transformation of Tree Decomposition into nice one.
+- Solving the Min-Dominating Set and Max-Weighted Independant Set using dynamic programming and tree decompositions.
+- Finding Tree Decomposition of graphs using elimination ordering.
+- Finding Tree Decomposition of graphs using separators. (ongoing)
