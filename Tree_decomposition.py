@@ -95,10 +95,35 @@ def adding_canonical_paths(parent,children):
         canonical_path(parent,child)
         adding_canonical_paths(child,child.children)
 
+def clean_tree(root):
+    ''' Brute force solution to issue'''
+    next=[root]
+
+    while next:
+        tempo=[]
+        for node in next: 
+            if len(node.children)==1 and (node.children)[0].value==node.value:
+                child=node.children[0]
+                children_of_child=child.children[:] #deepcopy
+                
+                #delete phase
+                node.delete_edge(child)
+                for child_of_child in children_of_child:
+                    child.delete_edge(child_of_child)
+                
+                #add edges
+                for child_of_child in children_of_child:
+                    child_of_child.add_parent(node)
+                
+            tempo.extend(node.children)
+
+        next=tempo[:]
+
 def canonical_tree(tree):
     ''' Transforms any tree decomposition into a nice one.
     Parameters:
         tree (Tree object)'''
     adding_join_subtree(tree.root,tree.root.children)
     adding_empty_leaves(tree)
+    clean_tree(tree.root)
     adding_canonical_paths(tree.root,tree.root.children)
