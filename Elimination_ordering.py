@@ -110,7 +110,7 @@ print(tree_decomposition_by_elimination(['1', '3', '7', '9', '4', '6', '2', '8']
 print(tree_decomposition_by_elimination(['1', '2', '3', '4', '6', '7', '8', '9'], graph))
 '''
 def width(tree):
-    w = 1
+    w = 2
     Q = [tree.root]
     while Q != []:
         u = Q.pop()
@@ -203,7 +203,7 @@ print(elim3)
 print(tree_decomposition_by_elimination(elim1, graph))
 print(tree_decomposition_by_elimination(elim2, graph))
 print(tree_decomposition_by_elimination(elim3, graph))
-'''
+
 
 graph = {}
 graph['0'] = {'1', '5', '6'}
@@ -254,4 +254,3 @@ print(elim3)
 print(tree_decomposition_by_elimination(elim1, graph))
 print(tree_decomposition_by_elimination(elim2, graph))
 print(tree_decomposition_by_elimination(elim3, graph))
-'''
