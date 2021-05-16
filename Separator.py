@@ -47,7 +47,7 @@ graph['7'] = {'4', '8'}
 graph['8'] = {'7', '9', '2'}
 graph['9'] = {'8', '6'}
 
-print(create_s_t_graph(graph, {'1', '4'}, {'6', '9'}))
+'''print(create_s_t_graph(graph, {'1', '4'}, {'6', '9'}))'''
 
 oo = 1 << 16
 
@@ -66,7 +66,7 @@ def create_residual_graph(st_g):
     return res_g
 
 
-print(create_residual_graph(create_s_t_graph(graph, {'1', '4'}, {'6', '9'})))
+'''print(create_residual_graph(create_s_t_graph(graph, {'1', '4'}, {'6', '9'})))'''
 
 
 def find_size_and_cut_min_vertex_cut(grph, S, T):
@@ -121,9 +121,17 @@ def find_size_and_cut_min_vertex_cut(grph, S, T):
     return size, cut, s_area
 
 
+'''
 print(find_size_and_cut_min_vertex_cut(graph, {'1', '4'}, {'6', '9'}))
 print(find_size_and_cut_min_vertex_cut(graph, {'7'}, {'3'}))
+print(find_size_and_cut_min_vertex_cut(graph, set(), {'3'}))
 
+graph_2 = {'1': {'2', '4'}, '2': {'1', '5'}, '4': {'1', '5'}, '5': {'2', '4', '6', '9'}, '6': {'5', '9'},
+           '9': {'5', '6'}}
+
+print(find_size_and_cut_min_vertex_cut(graph_2, {'1'}, {'9'}))
+print(find_size_and_cut_min_vertex_cut(graph_2, {'1'}, set()))
+'''
 '''
 def verify_min_separator(gr, S, T):
     gph = create_s_t_graph(gr, S, T)
@@ -158,73 +166,132 @@ def verify_min_separator(gr, S, T):
 '''
 
 
-def eliminate_set(gr, S):
-    g = deepcopy(gr)
+def eliminate_set(grrr, S):
+    g = deepcopy(grrr)
     for u in S:
-        for v in gr[u]:
-            g[v].remove(u)
+        if u in grrr:
+            for v in grrr[u]:
+                g[v].remove(u)
     for u in S:
-        del g[u]
+        if u in g:
+            del g[u]
     return g
 
 
-print(eliminate_set(graph, {'1', '2', '4'}))
+'''print(eliminate_set(graph, {'1', '2', '4'}))'''
 
 
 def find_all_partitions(W, k):
-    all = [(set(), set(), set())]
+    partitions = [(set(), set(), set())]
     M = int(2 * len(W) / 3.)
     for u in W:
-        nextAll = []
-        for (AW, SW, BW) in all:
+        nextPartitions = []
+        for (AW, SW, BW) in partitions:
             if len(SW) <= k:
                 nSW = set(SW)
                 nSW.add(u)
-                nextAll.append((AW, nSW, BW))
+                nextPartitions.append((AW, nSW, BW))
             if len(AW) < M:
                 nAW = set(AW)
                 nAW.add(u)
-                nextAll.append((nAW, SW, BW))
+                nextPartitions.append((nAW, SW, BW))
             if len(BW) < M:
                 nBW = set(BW)
                 nBW.add(u)
-                nextAll.append((AW, SW, nBW))
-        all = nextAll
+                nextPartitions.append((AW, SW, nBW))
+        partitions = nextPartitions
 
-    all = [(AW, SW, BW) for (AW, SW, BW) in all if min(len(AW), len(SW), len(BW)) > 0 and len(BW) <= len(AW)]
+    partitions = [(AW, SW, BW) for (AW, SW, BW) in partitions if len(BW) <= len(AW)]
+    partitions.sort(key=lambda x: (-len(x[0]) * len(x[1]) * len(x[2])))
+    return partitions
 
-    return all
 
-
-print(find_all_partitions({1, 2, 3, 4}, 0))
+'''print(find_all_partitions({1, 2, 3, 4}, 2))'''
 
 
 def find_balanced_partition(gr, W, k):
     allPartitions = find_all_partitions(W, k)
     for (AW, SW, BW) in allPartitions:
-        grph = eliminate_set(gr, SW)
-        size, cut, s_area = find_size_and_cut_min_vertex_cut(grph, AW, BW)
-        if size + len(SW) > k + 1:
+        grrph = eliminate_set(gr, SW)
+        size, cut, s_area = find_size_and_cut_min_vertex_cut(grrph, AW, BW)
+        if size + len(SW) >= k + 1:
             continue
+        A = AW | s_area
+        S = SW | cut
+        B = BW
 
-        t_area = set()
-        for u in grph:
-            if u not in s_area and u not in cut:
-                t_area.add(u)
+        for u in grrph:
+            if u not in A and u not in S:
+                B.add(u)
 
-        return True, AW | s_area, SW | cut, BW | t_area
+        return True, A, S, B
     return False, [], [], []
 
 
-def build_tree_decomposition_with_separator(gr, W, k):
-    V = list(gr.keys())
+'''
+def generate_partition(W, k):
+    n = len(W)
+    lW = list(W)
+    M = int(2 * n / 3.)
+    bits = [0] * (n + 1)
+
+    for i in range(3 ** n):
+        part = [set(), set(), set()]
+
+        for j in range(n):
+            xj = (bits[j] + j) % 3
+            part[xj].add(lW[j])
+
+        if len(part[0]) <= M and len(part[2]) <= M and len(part[1]) <= k + 1:
+            yield part
+
+        bits[0] += 1
+        for j in range(n):
+            if bits[j] == 3:
+                bits[j] = 0
+                bits[j + 1] += 1
+'''
+
+'''
+def find_balanced_partition(gr, W, k):
+    generator = generate_partition(W, k)
+    n = len(W)
+    for i in range(3**n):
+        AW, SW, BW = next(generator)
+        grrph = eliminate_set(gr, SW)
+        size, cut, s_area = find_size_and_cut_min_vertex_cut(grrph, AW, BW)
+        if size + len(SW) > k + 1:
+            continue
+        A = AW | s_area
+        S = SW | cut
+        B = BW
+
+        for u in grrph:
+            if u not in A and u not in S:
+                B.add(u)
+
+        return True, A, S, B
+    return False, [], [], []
+'''
+
+
+def build_tree_decomposition_with_separator(grr, W, k):
+    V = list(grr.keys())
     if W == set(V):
         return Tree(Node(V))
-    t, A, S, B = find_balanced_partition(gr, W, k)
+    t, A, S, B = find_balanced_partition(grr, W, k)
     if not t:
         raise ValueError('Tree Width is larger than ' + str(k))
-    treeA = build_tree_decomposition_with_separator(eliminate_set(gr, B), S | (W & A))
-    treeB = build_tree_decomposition_with_separator(eliminate_set(gr, A), S | (W & B))
+
+    if (A == set() or B == set()) and S.issubset(W):
+        X = set(V) - W
+        S.add(next(iter(X)))
+
+    treeA = build_tree_decomposition_with_separator(eliminate_set(grr, (B - S)), S | (W & A), k)
+    treeB = build_tree_decomposition_with_separator(eliminate_set(grr, (A - S)), S | (W & B), k)
     root_bag = Node(list(S | W))
     root_bag.add_children([treeA.root, treeB.root])
     return Tree(root_bag)
+
+
+print(build_tree_decomposition_with_separator(graph, set(), 2))
