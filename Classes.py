@@ -1,6 +1,8 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+
 from sidefunctions import hierarchy_pos
+from sidefunctions import even_hierarchy_pos
 
 class Node:
     ''' A class used to represent a node of a tree
@@ -224,7 +226,8 @@ class Tree:
                     DFS(child)
         
         DFS(self.root)
-        pos=hierarchy_pos(graph,0)
-        nx.draw(graph,pos,labels=d,with_labels=True,node_size=[200*len(node) for node in d.values()],node_color='red')
+        pos = even_hierarchy_pos(graph, 0)
+        nx.draw(graph,pos,labels=d,with_labels=True,node_size=[100+150*len(node) for node in d.values()],node_color='red'
+                ,font_size = 9)
         plt.show()
         return ""
