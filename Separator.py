@@ -295,3 +295,19 @@ def build_tree_decomposition_with_separator(grr, W, k):
 
 
 print(build_tree_decomposition_with_separator(graph, set(), 2))
+
+peterson = {}
+peterson['0'] = {'1', '5', '6'}
+peterson['1'] = {'0', '2', '7'}
+peterson['2'] = {'1', '3', '8'}
+peterson['3'] = {'2', '4', '9'}
+peterson['4'] = {'3', '5', 'A'}
+peterson['5'] = {'0', '4', 'B'}
+peterson['6'] = {'0', '8', 'A'}
+peterson['7'] = {'1', '9', 'B'}
+peterson['8'] = {'2', '6', 'A'}
+peterson['9'] = {'3', '7', 'B'}
+peterson['A'] = {'4', '6', '8'}
+peterson['B'] = {'5', '7', '9'}
+
+print(build_tree_decomposition_with_separator(peterson, set(), 3))
