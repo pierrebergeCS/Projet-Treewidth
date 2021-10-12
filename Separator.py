@@ -37,15 +37,7 @@ def create_s_t_graph(grph, S, T):
     return st_g
 
 
-graph = {}
-graph['1'] = {'4', '2'}
-graph['2'] = {'1', '3', '8'}
-graph['3'] = {'2', '6'}
-graph['4'] = {'7', '1'}
-graph['6'] = {'9', '3'}
-graph['7'] = {'4', '8'}
-graph['8'] = {'7', '9', '2'}
-graph['9'] = {'8', '6'}
+
 
 '''print(create_s_t_graph(graph, {'1', '4'}, {'6', '9'}))'''
 
@@ -94,6 +86,7 @@ def find_size_and_cut_min_vertex_cut(grph, S, T):
                     vis.add(v)
                     q.put(v)
                     par[v] = u
+                    
                     if v == 't_':
                         break
             if 't_' in vis:
@@ -109,13 +102,19 @@ def find_size_and_cut_min_vertex_cut(grph, S, T):
                         s_area.add(u)
             break
 
-        size += 1
+        ds = oo+N
         last = 't_'
         while last in par:
-            res_g[par[last]][last] -= 1
+            ds = min(ds, res_g[par[last]][last])
+            last = par[last]
+        
+        size += ds
+        last = 't_'
+        while last in par:
+            res_g[par[last]][last] -= ds
             if par[last] not in res_g[last]:
                 res_g[last][par[last]] = 0
-            res_g[last][par[last]] += 1
+            res_g[last][par[last]] += ds
             last = par[last]
 
     return size, cut, s_area
@@ -125,13 +124,10 @@ def find_size_and_cut_min_vertex_cut(grph, S, T):
 print(find_size_and_cut_min_vertex_cut(graph, {'1', '4'}, {'6', '9'}))
 print(find_size_and_cut_min_vertex_cut(graph, {'7'}, {'3'}))
 print(find_size_and_cut_min_vertex_cut(graph, set(), {'3'}))
-
-graph_2 = {'1': {'2', '4'}, '2': {'1', '5'}, '4': {'1', '5'}, '5': {'2', '4', '6', '9'}, '6': {'5', '9'},
-           '9': {'5', '6'}}
-
-print(find_size_and_cut_min_vertex_cut(graph_2, {'1'}, {'9'}))
-print(find_size_and_cut_min_vertex_cut(graph_2, {'1'}, set()))
+print([find_size_and_cut_min_vertex_cut(graph, {'1'}, {i}) for i in ['2','3','4','6','7','8','9']])
 '''
+
+
 '''
 def verify_min_separator(gr, S, T):
     gph = create_s_t_graph(gr, S, T)
@@ -294,7 +290,170 @@ def build_tree_decomposition_with_separator(grr, W, k):
     return Tree(root_bag)
 
 
-print(build_tree_decomposition_with_separator(graph, set(), 2))
+'''print(build_tree_decomposition_with_separator(graph, set(), 2))'''
+
+
+
+'''print(build_tree_decomposition_with_separator(peterson, set(), 3))'''
+
+def min_separator(gr):
+    min_size = oo
+    sep = set()
+    for a in gr:
+        for b in gr:
+            if a < b:        
+                s, c, _ = find_size_and_cut_min_vertex_cut(gr, {a}, {b})
+                if s < min_size:
+                    min_size = s
+                    sep = c
+    return sep
+
+def is_clique(gr, bag):
+    X = bag.value
+    for u in X:
+        for v in X:
+            if u < v and v not in gr[u]:
+                return False
+    return True
+
+def get_list_of_bags(t):
+    L = []
+    q = [t.root]
+    while q != []:
+        bag = q.pop()
+        L.append(bag)
+        q.extend(bag.children)
+    return L
+
+def aux_graph(gr, t, bag):
+    X_ = set(bag.value)
+    
+    aux = {}
+    for u in X_:
+        aux[u] = set()
+    
+    bags = get_list_of_bags(t)
+    for bag in bags:
+        X = set(bag.value) & X_
+        if X == X_: continue
+        for u in X:
+            for v in X:
+                if u < v:
+                    aux[u].add(v)
+                    aux[v].add(u)
+    
+    for u in X_:
+            for v in X_:
+                if v in gr[u]:
+                    aux[u].add(v) 
+    
+    return aux
+
+def refine(gr, t):
+    bag_x = Node([])
+    bags = get_list_of_bags(t)
+    for bag in bags:
+        if len(bag.value) > len(bag_x.value) and not is_clique(gr, bag)  :
+            bag_x = bag
+    
+    if bag_x.value == []:
+        print("Can t refine, bags are all cliques")
+        return
+    
+    H = aux_graph(gr, t, bag_x)
+    S = min_separator(H)
+    
+    if len(S) == 0:
+        print("Can t refine, aux graph is clique")
+        return
+    
+    H_S = eliminate_set(H, S)
+    W = []
+    
+    vis = set()
+    
+    for u in H_S:
+        if u in vis: continue
+        vis.add(u)
+        Q = [u]
+        w = set()
+        
+        while Q != []:
+            x = Q.pop()
+            w.add(x)
+            for v in H_S[x]:
+                if v in vis: continue
+                vis.add(v)
+                Q.append(v)
+        
+        W.append(w)
+    
+    T_X = [S | w for w in W]
+    T_bags = [Node(list(X_i)) for X_i in T_X]
+     
+    i_parent = -1
+    if bag_x.parent:
+        for i in range(len(T_X)):
+            bag_parent = bag_x.parent
+            if (set(bag_parent.value) & set(bag_x.value)).issubset(T_X[i]):      
+                bag_parent.delete_edge(bag_x)
+                T_bags[i].add_parent(bag_parent)
+                bag_x.add_parent(T_bags[i])
+                i_parent = i
+                break
+            
+            
+    adj_x = set(bag_x.children)
+    
+    
+    for i in range(len(T_X)):
+        if i == i_parent: continue
+        for bag in adj_x:    
+            if (set(bag.value) & set(bag_x.value)).issubset(T_X[i]):
+                bag.delete_edge(bag_x)
+                T_bags[i].add_children([bag])                
+                break
+        bag_x.add_children([T_bags[i]])
+         
+    bag_x.value = list(S)
+    return
+
+             
+graph_2 = {'1': {'2', '4'}, '2': {'1', '5'}, '4': {'1', '5'}, '5': {'2', '4', '6', '9'}, '6': {'5', '9'},
+           '9': {'5', '6'}}
+
+node_569 = Node(['5','6','9'])
+node_1245 = Node(['1','2','4','5'])
+extras = [Node([x]) for x in node_1245.value]
+
+node_569.add_children([node_1245])
+#node_1245.add_children(extras)
+
+t = Tree(node_569)
+print(t)
+refine(graph_2, t)
+print(t)
+
+node_all = Node(['1','2','4','5','6','9'])
+
+t = Tree(node_all)
+print(t)
+refine(graph_2, t)
+print(t)
+refine(graph_2, t)
+print(t)
+refine(graph_2, t)
+print(t)
+
+graph = {}
+graph['1'] = {'4', '2'}
+graph['2'] = {'1', '3', '8'}
+graph['3'] = {'2', '6'}
+graph['4'] = {'7', '1'}
+graph['6'] = {'9', '3'}
+graph['7'] = {'4', '8'}
+graph['8'] = {'7', '9', '2'}
+graph['9'] = {'8', '6'}
 
 peterson = {}
 peterson['0'] = {'1', '5', '6'}
@@ -310,4 +469,40 @@ peterson['9'] = {'3', '7', 'B'}
 peterson['A'] = {'4', '6', '8'}
 peterson['B'] = {'5', '7', '9'}
 
-print(build_tree_decomposition_with_separator(peterson, set(), 3))
+t = Tree(Node(list(peterson.keys())))
+print(t)
+refine(peterson, t)
+print(t)
+refine(peterson, t)
+print(t)
+refine(peterson, t)
+print(t)
+refine(peterson, t)
+print(t)
+refine(peterson, t)
+print(t)
+refine(peterson, t)
+print(t)
+refine(peterson, t)
+print(t)
+
+'''
+t = build_tree_decomposition_with_separator(peterson, set(), 3)
+print(t)
+'''
+
+graph_3 = {'5': {'2', '4', '6', '8'}, '2': {'5'}, '4': {'5', '1', '0'}, '1': {'4', '0'}, '0': {'4', '1'}, '6': {'5', 'a', 'c'},
+           'a': {'6', 'b'}, 'b': {'a', 'c'}, 'c': {'b', '6'}, '8': {'5', '7', '9'},'7': {'8'},'9': {'8'}}
+
+t = Tree(Node(list(graph_3.keys())))
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)

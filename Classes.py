@@ -226,8 +226,8 @@ class Tree:
                     DFS(child)
         
         DFS(self.root)
-        pos = even_hierarchy_pos(graph, 0)
-        nx.draw(graph,pos,labels=d,with_labels=True,node_size=[100+150*len(node) for node in d.values()],node_color='red'
-                ,font_size = 9)
+        pos = nx.spring_layout(graph)
+        nx.draw(graph,pos,labels=d,with_labels=True,node_size=[100+100*len(node) for node in d.values()],node_color=['red' if u != 0 else 'orange' for u in d]
+                ,font_size = 6)
         plt.show()
         return ""
