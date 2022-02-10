@@ -455,6 +455,27 @@ graph['7'] = {'4', '8'}
 graph['8'] = {'7', '9', '2'}
 graph['9'] = {'8', '6'}
 
+'''
+t = build_tree_decomposition_with_separator(peterson, set(), 3)
+print(t)
+'''
+
+graph_3 = {'5': {'2', '4', '6', '8'}, '2': {'5'}, '4': {'5', '1', '0'}, '1': {'4', '0'}, '0': {'4', '1'}, '6': {'5', 'a', 'c'},
+           'a': {'6', 'b'}, 'b': {'a', 'c'}, 'c': {'b', '6'}, '8': {'5', '7', '9'},'7': {'8'},'9': {'8'}}
+
+t = Tree(Node(list(graph_3.keys())))
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)
+refine(graph_3, t)
+print(t)
+
 peterson = {}
 peterson['0'] = {'1', '5', '6'}
 peterson['1'] = {'0', '2', '7'}
@@ -484,25 +505,4 @@ print(t)
 refine(peterson, t)
 print(t)
 refine(peterson, t)
-print(t)
-
-'''
-t = build_tree_decomposition_with_separator(peterson, set(), 3)
-print(t)
-'''
-
-graph_3 = {'5': {'2', '4', '6', '8'}, '2': {'5'}, '4': {'5', '1', '0'}, '1': {'4', '0'}, '0': {'4', '1'}, '6': {'5', 'a', 'c'},
-           'a': {'6', 'b'}, 'b': {'a', 'c'}, 'c': {'b', '6'}, '8': {'5', '7', '9'},'7': {'8'},'9': {'8'}}
-
-t = Tree(Node(list(graph_3.keys())))
-print(t)
-refine(graph_3, t)
-print(t)
-refine(graph_3, t)
-print(t)
-refine(graph_3, t)
-print(t)
-refine(graph_3, t)
-print(t)
-refine(graph_3, t)
 print(t)
